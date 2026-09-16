@@ -85,12 +85,17 @@ public class PortraitManager extends AbstractManager {
     public Portrait[] importDisassemblyFromEntryFile(Path entriesPath) throws IOException, AsmException {
         Console.logger().finest("ENTERING importDisassemblyFromEntryFile");
         EntriesAsmData entriesData = new EntriesAsmProcessor().importAsmData(entriesPath, null);
-        Portrait[] portraits = new Portrait[entriesData.entriesCount()];
+        Portrait[] portraits = new Portrait[entriesData.uniqueEntriesCount()];
         Path portraitPath = null;
         int failedToLoad = 0;
         for (int i = 0; i < portraits.length; i++) {
             try {
-                portraitPath = PathHelpers.getIncbinPath().resolve(entriesData.getPathForUnique(i));
+                Path uniquePath = entriesData.getPathForUnique(i);
+                if (uniquePath == null) {
+                    failedToLoad++;
+                    continue;
+                }
+                portraitPath = PathHelpers.getIncbinPath().resolve(uniquePath);
                 int index = FileHelpers.getNumberFromFileName(portraitPath.toFile());
                 PortraitPackage pckg = new PortraitPackage(index, PathHelpers.filenameFromPath(portraitPath));
                 portraits[i] = new PortraitDisassemblyProcessor().importDisassembly(portraitPath, pckg);
@@ -99,7 +104,7 @@ public class PortraitManager extends AbstractManager {
                 Console.logger().warning("Portrait could not be imported : " + portraitPath + " : " + e);
             }
         }
-        Console.logger().info(portraits.length + " portraits successfully imported from entries file : " + entriesPath);
+        Console.logger().info(portraits.length + " unique portraits imported from entries file : " + entriesPath);
         Console.logger().info((entriesData.entriesCount() - entriesData.uniqueEntriesCount()) + " duplicate portrait entries found.");
         if (failedToLoad > 0) {
             Console.logger().severe(failedToLoad + " portraits failed to import. See logs above");

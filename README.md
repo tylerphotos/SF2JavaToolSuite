@@ -1,6 +1,8 @@
 # SF2JavaToolSuite
 Consolidated project for all of the Java tools
 
+**This fork / branch:** see **[CHANGES.md](CHANGES.md)** for what `feature/p0-p3-tool-fixes` contains (bugfixes, SF2StatsEditor, SF2ToolLauncher, and leftover processor work) and how to build it.
+
 ## What is the SF2JavaToolSuite
 A collection of Java projects for building .jar applications to be used alongside https://github.com/ShiningForceCentral/SF2DISASM.
 

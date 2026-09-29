@@ -1,8 +1,10 @@
 name: build-tag-release
 
+# FORK DRY-RUN ONLY: extra trigger branch + DISASM clone URL point at tylerphotos.
+# Do not merge this branch to ShiningForceCentral.
 on:
   push:
-    branches: [main]
+    branches: [main, ci/fork-test-split-pipeline]
     paths:
       - '**/version.properties'
   pull_request:
@@ -287,7 +289,7 @@ jobs:
         run: |
           CHANGED_FILES=$(cat changed-files.txt 2>/dev/null || true)
           echo "Cloning destination repo..."
-          git clone --depth=1 --branch feature/tools_updates https://x-access-token:${{ secrets.SF2DISASM_PUSH_TOKEN }}@github.com/ShiningForceCentral/SF2DISASM.git target-repo
+          git clone --depth=1 --branch feature/tools_updates https://x-access-token:${{ secrets.SF2DISASM_PUSH_TOKEN }}@github.com/tylerphotos/SF2DISASM.git target-repo
     
           root_release_file="release.properties"
           if [ ! -f "$root_release_file" ]; then
